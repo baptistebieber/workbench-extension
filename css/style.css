@@ -1,0 +1,21 @@
+
+#mainBlock {
+    width: 1200px !important;
+}
+
+#QB_object_sel {
+    width: 300px !important;
+}
+
+#QB_field_sel {
+    width: 300px !important;
+    height: 300px !important;
+}
+
+select[name^="QB_filter_field_"] {
+    width: 300px !important;
+}
+
+input[name^="QB_filter_value_"] {
+    width: 250px !important;
+}
