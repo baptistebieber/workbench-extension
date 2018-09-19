@@ -2,7 +2,9 @@
     "manifest_version": 2, 
     "name": "Workbench Extension",
     "version": "1.0.0",
+    "author": "Baptiste BIEBER",
     "description": "Add functionalities to Workbench!",
+    "homepage_url" : "https://github.com/baptistebieber/workbench-extension",
     "icons": {
         "16": "img/icon-16.png",
         "32": "img/icon-32.png",
