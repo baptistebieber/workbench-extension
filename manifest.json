@@ -1,7 +1,7 @@
 {
     "manifest_version": 2, 
     "name": "Workbench Extension",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "Baptiste BIEBER",
     "description": "Add functionalities to Workbench!",
     "homepage_url" : "https://github.com/baptistebieber/workbench-extension",
@@ -17,7 +17,7 @@
     "content_scripts" : [{
         "matches" : ["https://workbench.developerforce.com/*"], 
         "css" : ["css/style.css"], 
-        "js" : ["js/jquery.min.js","js/script.js"] 
+        "js" : ["js/jquery.min.js","js/functions.js","js/custom_pages.js"] 
     }],
     "permissions": [ 
         "tabs", "https://workbench.developerforce.com/*" 

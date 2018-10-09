@@ -12,10 +12,19 @@
     height: 300px !important;
 }
 
+#QB_object_sel + p {
+    display: none;
+}
+
 select[name^="QB_filter_field_"] {
     width: 300px !important;
 }
 
 input[name^="QB_filter_value_"] {
     width: 250px !important;
+}
+
+#div-list-field {
+    max-height: 300px;
+    overflow-y: scroll; 
 }
