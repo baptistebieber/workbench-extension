@@ -111,16 +111,16 @@ function refresh_query() {
             if(value.substring(0,1) == '%') {
               value = value.substring(1);
               if(value.substring(value.length-1) == '%') {
-                value = value.substring(1,value.length-1);
+                value = value.substring(0,value.length-1);
                 operator = 'contains';
               }
               else {
-                operator = 'starts';
+                operator = 'ends';
               }
             }
             else if(value.substring(value.length-1) == '%') {
-              value = value.substring(1,value.length-1);
-              operator = 'ends';
+              value = value.substring(0,value.length-1);
+              operator = 'starts';
             }
             else {
               operator = '=';
