@@ -28,3 +28,8 @@ input[name^="QB_filter_value_"] {
     max-height: 300px;
     overflow-y: scroll; 
 }
+
+.label-field {
+    cursor: pointer;
+    display: block;
+}

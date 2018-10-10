@@ -191,6 +191,7 @@ function page_query_fields(sObject) {
       }
 
       var table_td = $('<td>');
+      table_td.addClass('td-field');
       var input = $('<input>');
       input.attr('type', 'checkbox');
       input.attr('id', sObject + '-' + $(this).val());
@@ -206,12 +207,12 @@ function page_query_fields(sObject) {
         var event = new Event('change');
         document.querySelector('#QB_field_sel').dispatchEvent(event);
       });
-      table_td.append(input);
       var label = $('<label>');
       label.attr('for', sObject + '-' + $(this).val());
       label.text($(this).text());
       label.attr('title', $(this).val());
       label.attr('class', 'label-field');
+      label.prepend(input);
       table_td.append(label);
 
       table_tr.append(table_td);
