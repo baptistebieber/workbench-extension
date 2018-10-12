@@ -1,7 +1,7 @@
 {
     "manifest_version": 2, 
     "name": "Workbench Extension",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "author": "Baptiste BIEBER",
     "description": "Add functionalities to Workbench!",
     "homepage_url" : "https://github.com/baptistebieber/workbench-extension",
@@ -14,12 +14,21 @@
     "browser_action": {
         "default_icon": "img/icon-16.png"
     },
-    "content_scripts" : [{
-        "matches" : ["https://workbench.developerforce.com/*"], 
-        "css" : ["css/style.css"], 
-        "js" : ["js/jquery.min.js","js/functions.js","js/custom_pages.js"] 
-    }],
+    "content_scripts" : [
+        {
+            "matches" : ["https://workbench.developerforce.com/*"],
+            "js" : ["js/jquery.min.js"],
+            "css" : ["css/style.css"]
+        },
+        {
+            "matches" : ["https://workbench.developerforce.com/query.php"],
+            "js" : ["js/query.js"],
+            "css" : ["css/query.css"]
+        }
+    ],
     "permissions": [ 
-        "tabs", "https://workbench.developerforce.com/*" 
+        "cookies",
+        "tabs",
+        "https://workbench.developerforce.com/*"
     ]
 }

@@ -1,0 +1,42 @@
+
+
+#QB_object_sel {
+    width: 300px !important;
+}
+
+#QB_field_sel {
+    width: 300px !important;
+    height: 300px !important;
+}
+
+select[name^="QB_filter_field_"] {
+    width: 300px !important;
+}
+
+input[name^="QB_filter_value_"] {
+    width: 250px !important;
+}
+
+#QB_object_sel + p {
+    display: none;
+}
+
+#div-list-field {
+    max-height: 300px;
+    overflow-y: scroll; 
+}
+
+.label-field {
+    cursor: pointer;
+    display: block;
+}
+
+#input-search {
+    width: 50%;
+    float: right;
+}
+
+.div-field {
+    float: left;
+    width: 25%;
+}

@@ -1,4 +1,8 @@
 
+var list_fields = [];
+var map_fields = {};
+var running = false;
+
 function generate_event(type, selector) {
   var event = new Event(type);
   document.querySelector(selector).dispatchEvent(event);
@@ -23,6 +27,9 @@ function parse_query(query) {
     parsed_query['select'] = [];
     $.each(s_select.split(','),function(k,v) {
       v = v.trim();
+      if(v == 'count()') {
+        v = 'count';
+      }
       if(v != '') {
         parsed_query['select'].push(v.trim());
       }
@@ -47,7 +54,7 @@ function refresh_query() {
   if(sObject != '') {
     var s_query = $('#soql_query_textarea').val();
     var a_query = parse_query(s_query);
-    console.log(a_query);
+    // console.log(a_query);
     var object = a_query['from'];
     if(object != sObject) {
       localStorage.setItem('query', s_query);
@@ -74,11 +81,12 @@ function refresh_query() {
     $('input[name^=QB_filter_value_]').each(function() {
       $(this).val('');
     });
+
     var i = 0;
     $.each(a_query['where'], function(k, v) {
       var m = v.match(/([A-Za-z0-9_]+) *(=|!=|<|>|<=|>=|LIKE|IN|NOT IN|INCLUDES|EXCLUDES) *(.+)/);
       if(m != null) {
-        console.log($('#filter_row_'+i));
+        // console.log($('#filter_row_'+i));
         if($('#filter_row_'+i).length == 0) {
           $('#filter_plus_button').click();
         }
@@ -87,26 +95,19 @@ function refresh_query() {
         var value = m[3];
         switch(operator) {
           case '=':
-            console.log('=');
             value = value.replace(/'(.*)'/,'$1');
             break;
           case '!=':
-            console.log('!=');
             break;
           case '<':
-            console.log('<');
             break;
           case '>':
-            console.log('>');
             break;
           case '=':
-            console.log('=<');
             break;
           case '=':
-            console.log('=>');
             break;
           case 'LIKE':
-            console.log('LIKE');
             value = value.replace(/'(.*)'/,'$1');
             if(value.substring(0,1) == '%') {
               value = value.substring(1);
@@ -127,19 +128,15 @@ function refresh_query() {
             }
             break;
           case 'IN':
-            console.log('IN');
             value = value.replace(/\((.*)\)/,'$1');
             break;
           case 'NOT IN':
-            console.log('NOT IN');
             value = value.replace(/\((.*)\)/,'$1');
             break;
           case 'INCLUDES':
-            console.log('INCLUDES');
             value = value.replace(/\((.*)\)/,'$1');
             break;
           case 'EXCLUDES':
-            console.log('EXCLUDES');
             value = value.replace(/\((.*)\)/,'$1');
             break;
           default:
@@ -177,55 +174,169 @@ function refresh_query() {
 
 function page_query_fields(sObject) {
   var tr = $('<tr>');
-  var td = $('<td>Fields:</td>');
-  var div = $('<div id="div-list-field"></div>');
-  td.attr('colspan', 2);
+  var td = $('<td colspan="2">Fields:</td>');
+
+
+  var div = $('<div></div>');
   var table = $('<table>');
   table.width('100%');
-  var i = 0;
   var table_tr;
-  $('#QB_field_sel option').each(function(index) {
-    if($(this).val() != 'count()') {
-      if(i%4 == 0) {
-        table_tr = $('<tr>');
-      }
+  var table_td;
 
-      var table_td = $('<td>');
-      table_td.addClass('td-field');
-      var input = $('<input>');
-      input.attr('type', 'checkbox');
-      input.attr('id', sObject + '-' + $(this).val());
-      input.attr('value', $(this).val());
-      input.attr('class', 'input-field');
-      input.change(function() {
-        if($(this).is(':checked')) {
-          $('#QB_field_sel option[value='+$(this).val()+']').prop("selected", true);
-        }
-        else {
-          $('#QB_field_sel option[value='+$(this).val()+']').prop("selected", false);
-        }
-        var event = new Event('change');
-        document.querySelector('#QB_field_sel').dispatchEvent(event);
-      });
-      var label = $('<label>');
-      label.attr('for', sObject + '-' + $(this).val());
-      label.text($(this).text());
-      label.attr('title', $(this).val());
-      label.attr('class', 'label-field');
-      label.prepend(input);
-      table_td.append(label);
+  table_tr = $('<tr>');
+  //############### Create Select All ##################
+  table_td = $('<td colspan="2">');
+  var label_select_all = $('<label for="select-all">All</label>');
+  var input_select_all = $('<input id="select-all" type="checkbox"/>');
+  input_select_all.change(function() {
+    var me = false;
+    if(!running) {
+      running = true;
+      me = true;
+    }
 
-      table_tr.append(table_td);
-      i++;
-      if(i%4 == 0) {
-        table.append(table_tr);
-        table_tr = null;
+    var is_check = $(this).is(':checked')
+    if($('#'+sObject+'-count:checked') != null) {
+      $('#'+sObject+'-count:checked').click();
+    }
+    $('.input-field').each(function() {
+      if($(this).is(':checked') && !is_check) {
+        $(this).click();
       }
+      else if(!$(this).is(':checked') && is_check) {
+        $(this).click();
+      }
+    });
+
+    if(me) {
+      running = false;
     }
   });
-  if(table_tr != null) {
-    table.append(table_tr);
-  }
+  label_select_all.prepend(input_select_all);
+  table_td.append(label_select_all);
+  table_tr.append(table_td);
+  table_td = null;
+
+
+  //############### Create Find ##################
+  table_td = $('<td colspan="2">');
+  var input_search = $('<input id="input-search" type="text" placeholder="Search" />');
+
+  input_search.keyup(function() {
+    var val_filter = $(this).val();
+    if(val_filter.length > 0) {
+      var list_visible = list_fields.filter(function(v) {
+        return v.toLowerCase().match(val_filter.toLowerCase());
+      });
+      var list_hide = list_fields.filter(function(v) {
+        return v.toLowerCase().match(val_filter.toLowerCase()) == null;
+      });
+      // console.log(list_visible);
+      // console.log(list_hide);
+
+      $.each(list_visible, function(k,v) {
+        map_fields[v].show();
+      });
+      $.each(list_hide, function(k,v) {
+        map_fields[v].hide();
+      });
+    }
+    else {
+      $.each(map_fields, function(k,v) {
+        v.show();
+      });
+    }
+  });
+
+  input_search.keypress(function(event) {
+    if(event.keyCode == '13') {
+      event.preventDefault();
+    }
+  });
+
+  table_td.append(input_search);
+  table_tr.append(table_td);
+  table_td = null;
+
+
+  //############### Insert First Line ##################
+  table.append(table_tr);
+  table_tr = $('<tr>');
+  table_td = $('<td colspan="4">');
+  var tmp_div = $('<div id="div-list-field"></div>');
+
+  //############### Insert Fields ##################
+  $('#QB_field_sel option').each(function(index) {
+    var this_val = $(this).val();
+    if(this_val == 'count()') {
+      this_val = 'count';
+    }
+    var id = 'option-' + this_val;
+    $(this).attr('id', id);
+
+    list_fields.push(this_val);
+
+    var input = $('<input>');
+    input.attr('type', 'checkbox');
+    input.attr('id', sObject + '-' + this_val);
+    input.attr('value', this_val);
+
+    if(this_val != 'count') {
+      input.addClass('input-field');
+    }
+    input.addClass('filter-field');
+
+    input.change(function() {
+      var me = false;
+      if(!running) {
+        running = true;
+        me = true;
+      }
+
+      var new_val = false;
+
+      if($(this).is(':checked')) {
+        new_val = true;
+      }
+
+      if(me && new_val) {
+        if(this_val == 'count' && new_val) {
+          $('.input-field:checked').each(function() {
+            $(this).click();
+          });
+        }
+        else if(this_val != 'count' && $('#'+sObject+'-count:checked') != null) {
+          $('#'+sObject+'-count:checked').click();
+        }
+      }
+
+      $('#option-'+$(this).val()).prop("selected", new_val);
+      if(me) {
+        running = false;
+      }
+
+      var event = new Event('change');
+      document.querySelector('#QB_field_sel').dispatchEvent(event);
+    });
+
+    var label = $('<label>');
+    label.attr('for', sObject + '-' + this_val);
+    label.text($(this).text());
+    label.attr('title', this_val);
+    label.attr('class', 'label-field');
+    label.prepend(input);
+
+    var div_field = $('<div>');
+    div_field.addClass('div-field');
+    div_field.append(label);
+
+    map_fields[this_val] = div_field;
+    tmp_div.append(div_field);
+  });
+
+  table_td.append(tmp_div);
+  table_tr.append(table_td);
+  table.append(table_tr);
   div.append(table);
   td.append(div);
   tr.append(td);
@@ -243,7 +354,6 @@ function page_query_soql(sObject) {
 }
 
 function page_query_afterload(sObject) {
-  console.log(localStorage.getItem('query'));
   if(localStorage.getItem('query') != null && localStorage.getItem('query') != '') {
      $('#soql_query_textarea').val(localStorage.getItem('query'));
      localStorage.removeItem('query');
@@ -251,9 +361,6 @@ function page_query_afterload(sObject) {
   if($('#soql_query_textarea').val() != '') {
     refresh_query();
   }
-}
-
-function page_login() {
 }
 
 function page_query() {
@@ -266,24 +373,6 @@ function page_query() {
 }
 
 $(document).ready(function() {
-
-  switch(location.pathname) {
-    case '/login.php':
-      page_login();
-      break;
-    case '/query.php':
-      page_query();
-      break;
-    default:
-      break;
-  }
-
-
-  // var list_objects = [];
-  // $('#QB_object_sel option').each(function() {
-  //   list_objects.append($(this).attr('value'));
-  // });
-  // console.log(list_objects);
-  // alert('rouge');
-
+  console.info('%c[Workbench Extension]:'+'%c query.js', 'background:#999999;color:#FFFFFF', 'background:none;color:inherit');
+  page_query();
 });
