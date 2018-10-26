@@ -40,3 +40,32 @@ input[name^="QB_filter_value_"] {
     float: left;
     width: 25%;
 }
+
+.a-result {
+    border-style: solid solid none none;
+    border-width: 1px;
+    border-color: gray;
+    padding: 5px 17px;
+}
+
+.a-result:first-child {
+    border-left-style: solid;
+}
+
+.a-result.active {
+    background-color: whitesmoke;
+}
+
+.a-result:focus {
+    outline: none;
+}
+
+.a-result:hover {
+    background-color: whitesmoke;
+}
+
+.result {
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+}

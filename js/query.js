@@ -363,12 +363,97 @@ function page_query_afterload(sObject) {
   }
 }
 
+function json_to_csv(headers, values) {
+  var csv = '"' + headers.join('","') + '"';
+
+  $.each(values, function(k, object) {
+    var list_value = [];
+    $.each(headers, function(i, header) {
+      if(header in object) {
+        list_value.push(object[header]);
+      }
+      else {
+        list_value.push('');
+      }
+    });
+    csv += "\n" + '"' + list_value.join('","') + '"';
+  });
+
+  return csv;
+}
+
+function download_request() {
+  var div_container = $('div[id^=async-container-]');
+  var input = $('<input id="Download Results" type="button" name="download-results" value="Download Results" />');
+  input.click(function(event) {
+    event.preventDefault();
+    var headers = [];
+    var values = [];
+    var already_headers = false;
+    $('#query_results tr').each(function() {
+      var object = {};
+      $(this).find('td, th').each(function(k) {
+        if(k > 0) {
+          var i = k - 1;
+          if(!already_headers) {
+            headers.push($(this).text());
+          }
+          else {
+            object[headers[i]] = $(this).text();
+          }
+        }
+      });
+      if(already_headers) {
+        values.push(object);
+      }
+      else {
+        already_headers = true;
+      }
+      // console.log(values);
+    });
+    $('#results-json').text(JSON.stringify(values));
+    $('#results-csv').text(json_to_csv(headers, values));
+    $('#btn-csv').addClass('active');
+    $(this).hide();
+    $('#button-result').slideDown();
+    $('#results-csv').slideDown();
+
+
+  });
+  var div = $('<div id="div-result"></div>');
+  var textarea_json = $('<textarea id="results-json" class="result" rows="10" style="width: 99%; overflow: auto; font-family: monospace, courier;display: none;"></textarea>');
+  var textarea_csv = $('<textarea id="results-csv" class="result" rows="10" style="width: 99%; overflow: auto; font-family: monospace, courier;display: none;"></textarea>');
+  var button_json = $('<button id="btn-json" class="a-result" href="#results-json" type="button">JSON</button>');
+  var button_csv = $('<button id="btn-csv" class="a-result" href="#results-csv" type="button">CSV</button>');
+
+  var div_button = $('<div id="button-result" style="display: none;"></div>');
+  div_button.append(button_csv)
+  div_button.append(button_json)
+
+  div.append(input);
+  div.append(div_button);
+  div.append(textarea_csv);
+  div.append(textarea_json);
+  
+  
+  $('div[id^=async-container-]').before(div);
+
+  $('.a-result').click(function(event) {
+    event.preventDefault();
+    $('.result').hide();
+    $('.a-result.active').removeClass('active');
+    $(this).addClass('active');
+    $($(this).attr('href')).show();
+  });
+}
+
 function page_query() {
   var sObject = document.querySelector('#QB_object_sel').value;
   if(sObject != '') {
     page_query_fields(sObject);
   }
   page_query_soql(sObject);
+  download_request();
   page_query_afterload(sObject);
 }
 

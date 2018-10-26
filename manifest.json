@@ -21,7 +21,7 @@
             "css" : ["css/style.css"]
         },
         {
-            "matches" : ["https://workbench.developerforce.com/query.php"],
+            "matches" : ["https://workbench.developerforce.com/query.php*"],
             "js" : ["js/query.js"],
             "css" : ["css/query.css"]
         }
