@@ -1,0 +1,31 @@
+
+#scriptInput {
+    max-width: 900px;
+    min-width: 700px;
+}
+
+#list-script {
+    cursor: pointer;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#list-script .item-script {
+    border-width: 1px;
+    border-style: solid;
+    border-color: gray;
+    padding: 4px 5px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background-color: whitesmoke;
+}
+
+.item-script span {
+    display: inline-block;
+    width: calc(100% - 20px);
+}
+
+.remove-script {
+    float: right;
+}
