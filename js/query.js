@@ -1,4 +1,9 @@
 
+function custom_log(msg) {
+  console.info('%c[Workbench Extension]:'+'%c ' + msg, 'background:#999999;color:#FFFFFF', 'background:none;color:inherit');
+}
+
+
 var list_fields = [];
 var map_fields = {};
 var running = false;
@@ -458,6 +463,6 @@ function page_query() {
 }
 
 $(document).ready(function() {
-  console.info('%c[Workbench Extension]:'+'%c query.js', 'background:#999999;color:#FFFFFF', 'background:none;color:inherit');
+  custom_log('query.js');
   page_query();
 });

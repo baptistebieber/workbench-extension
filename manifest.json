@@ -24,6 +24,11 @@
             "matches" : ["https://workbench.developerforce.com/query.php*"],
             "js" : ["js/query.js"],
             "css" : ["css/query.css"]
+        },
+        {
+            "matches" : ["https://workbench.developerforce.com/execute.php*"],
+            "js" : ["js/execute.js"],
+            "css" : ["css/execute.css"]
         }
     ],
     "permissions": [ 
