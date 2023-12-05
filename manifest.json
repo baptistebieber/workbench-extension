@@ -1,7 +1,8 @@
 {
-    "manifest_version": 2, 
+    "update_url": "https://clients2.google.com/service/update2/crx",
+    "manifest_version": 3, 
     "name": "Workbench Extension",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "author": "Baptiste BIEBER",
     "description": "Add functionalities to Workbench!",
     "homepage_url" : "https://github.com/baptistebieber/workbench-extension",
@@ -11,7 +12,7 @@
         "48": "img/icon-48.png",
         "128": "img/icon-128.png"
     },
-    "browser_action": {
+    "action": {
         "default_icon": "img/icon-16.png"
     },
     "content_scripts" : [
@@ -31,9 +32,7 @@
             "css" : ["css/execute.css"]
         }
     ],
-    "permissions": [ 
-        "cookies",
-        "tabs",
+    "host_permissions": [ 
         "https://workbench.developerforce.com/*"
     ]
 }
